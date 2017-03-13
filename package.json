@@ -1,0 +1,14 @@
+{
+  "name": "tackle-cli",
+  "version": "0.1.0",
+  "description": "Generate static sites with Node.js and template literals",
+  "bin": {
+    "tackle": "bin.js"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "xtend": "^4.0.1"
+  },
+  "author": "Brecht Savelkoul <code@brecht.pm>",
+  "license": "MIT"
+}
