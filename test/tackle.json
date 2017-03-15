@@ -1,3 +1,4 @@
 {
-  "web": "html"
+  "web": "www",
+  "other": "stuff"
 }

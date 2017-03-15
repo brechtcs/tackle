@@ -9,6 +9,6 @@ module.exports = function multiple (tackle) {
       ${post}
     </main>`
 
-    tackle.web(base(page).toString(), `/${number}/index.html`)
+    tackle.write(base(page).toString(), `/${number}/index.html`)
   })
 }

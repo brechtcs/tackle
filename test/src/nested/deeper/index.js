@@ -7,5 +7,5 @@ module.exports = function index (tackle) {
     Hello deeply nested world!
   </main>`
 
-  tackle.web(base(page).toString(), '.html')
+  tackle.write(base(page).toString(), '.html')
 }
