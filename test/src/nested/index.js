@@ -1,7 +1,7 @@
 const html = require('bel')
 
 module.exports = function index (tackle) {
-  const base = tackle.lib('base')
+  const base = require(tackle.lib('base'))
 
   const page = html`<main>
     Hello nested world!

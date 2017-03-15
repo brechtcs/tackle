@@ -1,14 +1,20 @@
+const fs = require('fs')
 const html = require('bel')
 
 module.exports = function multiple (tackle) {
-  const base = tackle.lib('base')
-  const posts = tackle.etc('posts.json')
+  const base = require(tackle.lib('base'))
 
-  JSON.parse(posts).forEach(function (post, number) {
-    const page = html`<main>
-      ${post}
-    </main>`
+  fs.readFile(tackle.etc('posts.json'), function(e, posts) {
+    if (e) {
+      tackle.fail(e, '/')
+    }
 
-    tackle.write(base(page).toString(), `/${number}/index.html`)
+    JSON.parse(posts).forEach(function (post, number) {
+      const page = html`<main>
+        ${post}
+      </main>`
+
+      tackle.write(base(page).toString(), `/${number}/index.html`)
+    })
   })
 }

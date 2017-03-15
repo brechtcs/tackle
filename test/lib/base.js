@@ -2,6 +2,9 @@ const html = require('bel')
 
 module.exports = function (input) {
   return html`<html>
-    <body>${input}</body>
+    <body>
+      <main>${input}</main>
+      <script src="/client.js"></script
+    </body>
   </html>`
 }

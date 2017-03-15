@@ -1,11 +1,12 @@
 {
   "name": "tackle-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generate static sites with Node.js and template literals",
   "bin": {
     "tackle": "bin.js"
   },
   "dependencies": {
+    "del": "^2.2.2",
     "mkdirp": "^0.5.1",
     "xtend": "^4.0.1"
   },

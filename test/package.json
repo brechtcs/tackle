@@ -1,6 +1,6 @@
 {
   "name": "tackle-test",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Test project for Tackle CLI",
   "scripts": {
     "test": "../bin.js"
@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "bel": "^4.5.1",
+    "browserify": "^14.1.0",
     "request": "^2.81.0"
   }
 }
