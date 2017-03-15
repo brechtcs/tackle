@@ -116,7 +116,7 @@ function rename (file, name) {
 
 function fail (file) {
   return function (e, name) {
-    console.error(msg.fileError(`${target} (${e.toString()})`))
+    console.error(msg.fileError(`${rename(file, name)} (${e.toString()})`))
   }
 }
 
