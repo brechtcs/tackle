@@ -8,6 +8,14 @@ module.exports = {
   parseJs: (path) => "parse " + pretty(path)
 }
 
+module.exports.info = function info (msg) {
+  console.info(msg)
+}
+
+module.exports.err = function err (msg) {
+  console.error(msg)
+}
+
 function pretty (path) {
   return path.replace(process.cwd(), '.')
 }

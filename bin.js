@@ -1,6 +1,7 @@
 #!/usr/bin/node
 
 const del = require('del')
+const freeze = require('deep-freeze-node')
 const fs = require('fs')
 const mkdir = require('mkdirp')
 const path = require('path')
@@ -58,7 +59,7 @@ function resolver (base) {
 }
 
 function clean (dir) {
-  console.info(msg.cleanFolder(dir))
+  msg.info(msg.cleanFolder(dir))
   return del([dir + '/**'])
 }
 
@@ -80,15 +81,15 @@ function walk (dir) {
           fail: fail(target)
         }
 
-        console.info(msg.parseJs(entry))
-        make(xtend(tackle, methods))
+        msg.info(msg.parseJs(entry))
+        make(freeze(xtend(tackle, methods)))
       }
       catch (e) {
         if (/\.js$/.test(entry)) {
           throw new Error(e)
         }
         else {
-          console.info(msg.fileCopy(entry))
+          msg.info(msg.fileCopy(entry))
 
           const source = fs.createReadStream(entry)
           const dest = stream(target)(null)
@@ -105,9 +106,9 @@ function stream (file) {
     mkdir.sync(path.dirname(target))
 
     return fs.createWriteStream(target).on('error', function (e) {
-      console.error(msg.fileError(target, e.toString))
+      msg.err(msg.fileError(target, e.toString))
     }).on('close', function () {
-      console.info(msg.fileDone(target))
+      msg.info(msg.fileDone(target))
     })
   }
 }
@@ -119,9 +120,9 @@ function write (file) {
 
     fs.writeFile(target, content, function (e) {
       if (e) {
-        console.error(msg.fileError(target, e.toString()))
+        msg.err(msg.fileError(target, e.toString()))
       }
-      console.info(msg.fileDone(target))
+      msg.info(msg.fileDone(target))
     })
   }
 }
@@ -132,7 +133,7 @@ function rename (file, name) {
 
 function fail (file) {
   return function (e, name) {
-    console.error(msg.fileError(rename(file, name), e.toString()))
+    msg.err(msg.fileError(rename(file, name), e.toString()))
   }
 }
 
