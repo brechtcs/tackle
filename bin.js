@@ -5,40 +5,56 @@ const fs = require('fs')
 const mkdir = require('mkdirp')
 const path = require('path')
 const xtend = require('xtend')
+const msg = require('./msg')
 
-const msg = {
-  cleanFolder: (content) => "cleaning " + content,
-  fileDone: (content) => "done " + content,
-  fileError: (content) => "failed " + content,
-  noConfig: "Couldn't find `tackle.json` config file",
-  parseJs: (content) => "parsing " + content
+let tackle = init()
+
+function init (config) {
+  let conf = load(config)
+  let methods = {
+    src: resolver(path.join(process.cwd(), 'src')),
+    target: resolver(path.join(process.cwd(), 'target'))
+  }
+
+  if (conf.folders) {
+    Object.keys(conf.folders).forEach(function (folder) {
+      if (['stream', 'write', 'fail'].indexOf(folder) === -1) {
+        methods[folder] = resolver(conf.folders[folder])
+      }
+      else {
+        throw new Error(msg.illegalFolder(folder))
+      }
+    })
+
+    delete conf.folders
+  }
+
+  return xtend(conf, methods)
 }
 
-const tackle = {}
-tackle.conf = config()
-tackle.etc = (file) => path.join(tackle.conf.etc, file)
-tackle.lib = (file) => path.join(tackle.conf.lib, file)
-
-function config (file) {
-  let conf = {}
-
-  if (!file) {
-    file = path.join(process.cwd(), 'tackle.json')
+function load (config) {
+  if (!config) {
+    config = path.join(process.cwd(), 'tackle.json')
   }
-  if (fs.existsSync(file)) {
-    const json = fs.readFileSync(file)
-    conf = JSON.parse(json)
+
+  if (fs.existsSync(config)) {
+    const json = fs.readFileSync(config)
+    return JSON.parse(json)
   }
   else {
     throw new Error(msg.noConfig)
   }
+}
 
-  return xtend({
-    etc: path.join(process.cwd(), 'etc'),
-    lib: path.join(process.cwd(), 'lib'),
-    src: path.join(process.cwd(), 'src'),
-    web: path.join(process.cwd(), 'web')
-  }, conf)
+function resolver (base) {
+  base = path.resolve(base)
+
+  return function (module) {
+    if (module) {
+      return path.join(base, module)
+    }
+    return base
+  }
 }
 
 function clean (dir) {
@@ -54,7 +70,7 @@ function walk (dir) {
       walk(entry)
     }
     else {
-      const target = entry.replace(tackle.conf.src, tackle.conf.web)
+      const target = entry.replace(tackle.src(), tackle.target())
 
       try {
         const make = require(entry)
@@ -69,10 +85,10 @@ function walk (dir) {
       }
       catch (e) {
         if (/\.js$/.test(entry)) {
-          console.error(msg.fileError(`${target} (${e.toString()})`))
+          throw new Error(e)
         }
         else {
-          console.info('copying ' + entry)
+          console.info(msg.fileCopy(entry))
 
           const source = fs.createReadStream(entry)
           const dest = stream(target)(null)
@@ -89,7 +105,7 @@ function stream (file) {
     mkdir.sync(path.dirname(target))
 
     return fs.createWriteStream(target).on('error', function (e) {
-      console.error(msg.fileError(`${target} (${e.toString()})`))
+      console.error(msg.fileError(target, e.toString))
     }).on('close', function () {
       console.info(msg.fileDone(target))
     })
@@ -103,7 +119,7 @@ function write (file) {
 
     fs.writeFile(target, content, function (e) {
       if (e) {
-        console.error(msg.fileError(`${target} (${e.toString()})`))
+        console.error(msg.fileError(target, e.toString()))
       }
       console.info(msg.fileDone(target))
     })
@@ -116,8 +132,8 @@ function rename (file, name) {
 
 function fail (file) {
   return function (e, name) {
-    console.error(msg.fileError(`${rename(file, name)} (${e.toString()})`))
+    console.error(msg.fileError(rename(file, name), e.toString()))
   }
 }
 
-clean(tackle.conf.web).then(() => walk(tackle.conf.src))
+clean(tackle.target()).then(() => walk(tackle.src()))

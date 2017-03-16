@@ -1,6 +1,5 @@
 {
   "name": "tackle-test",
-  "version": "0.3.0",
   "description": "Test project for Tackle CLI",
   "scripts": {
     "test": "../bin.js"

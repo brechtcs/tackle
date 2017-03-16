@@ -1,4 +1,8 @@
 {
-  "web": "www",
+  "folders": {
+    "etc": "./etc",
+    "lib": "./lib",
+    "target": "./www"
+  },
   "other": "stuff"
 }
