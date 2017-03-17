@@ -1,7 +1,8 @@
 {
-  "name": "tackle-cli",
-  "version": "0.4.1",
+  "name": "tackle-pm",
+  "version": "1.0.0",
   "description": "Generate static sites with Node.js and template literals",
+  "main": "lib/tackle.js",
   "bin": {
     "tackle": "bin.js"
   },

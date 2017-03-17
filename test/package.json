@@ -9,5 +9,13 @@
     "bel": "^4.5.1",
     "browserify": "^14.1.0",
     "request": "^2.81.0"
+  },
+  "tackle": {
+    "folders": {
+      "etc": "./etc",
+      "lib": "./lib",
+      "target": "./www"
+    },
+    "other": "stuff"
   }
 }

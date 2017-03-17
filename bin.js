@@ -6,57 +6,9 @@ const fs = require('fs')
 const mkdir = require('mkdirp')
 const path = require('path')
 const xtend = require('xtend')
-const msg = require('./msg')
 
-let tackle = init()
-
-function init (config) {
-  let conf = load(config)
-  let methods = {
-    src: resolver(path.join(process.cwd(), 'src')),
-    target: resolver(path.join(process.cwd(), 'target'))
-  }
-
-  if (conf.folders) {
-    Object.keys(conf.folders).forEach(function (folder) {
-      if (['stream', 'write', 'fail'].indexOf(folder) === -1) {
-        methods[folder] = resolver(conf.folders[folder])
-      }
-      else {
-        throw new Error(msg.illegalFolder(folder))
-      }
-    })
-
-    delete conf.folders
-  }
-
-  return xtend(conf, methods)
-}
-
-function load (config) {
-  if (!config) {
-    config = path.join(process.cwd(), 'tackle.json')
-  }
-
-  if (fs.existsSync(config)) {
-    const json = fs.readFileSync(config)
-    return JSON.parse(json)
-  }
-  else {
-    throw new Error(msg.noConfig)
-  }
-}
-
-function resolver (base) {
-  base = path.resolve(base)
-
-  return function (module) {
-    if (module) {
-      return path.join(base, module)
-    }
-    return base
-  }
-}
+const msg = require('./lib/msg')
+const tackle = require('./lib/tackle')
 
 function clean (dir) {
   msg.info(msg.cleanFolder(dir))
